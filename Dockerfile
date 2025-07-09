@@ -1,21 +1,19 @@
-FROM python:3.11-slim
-
-WORKDIR /app
+FROM python:3.11-slim-bookworm
 
 RUN apt-get update && apt-get install -y \
+    libgl1 \
+    libglib2.0-0 \
     tesseract-ocr \
-    poppler-utils \
     tesseract-ocr-por \
     tesseract-ocr-eng \
     tesseract-ocr-spa \
-    --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip poetry
-COPY pyproject.toml ./
-RUN poetry config virtualenvs.create false
+WORKDIR /app
 
-RUN poetry install --without dev --no-interaction --no-ansi -vvv
+RUN pip install --no-cache-dir "docling-serve[all]" --extra-index-url https://download.pytorch.org/whl/cpu
+
+RUN docling-tools models download
 
 COPY . .
 
