@@ -13,10 +13,9 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install --upgrade pip poetry
 COPY pyproject.toml ./
-
 RUN poetry config virtualenvs.create false
 
-RUN poetry install --without dev --no-interaction --no-ansi
+RUN poetry install --without dev --no-interaction --no-ansi -vvv
 
 COPY . .
 
