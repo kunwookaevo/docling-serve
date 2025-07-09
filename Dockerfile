@@ -11,11 +11,13 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-COPY ./requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+RUN pip install --upgrade pip poetry
+COPY poetry.lock pyproject.toml ./
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-dev --no-interaction --no-ansi
 
-COPY . /app
+COPY . .
 
 EXPOSE 5001
 
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:5001", "main:app"]
+CMD ["uvicorn", "docling_serve.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "5001"]
