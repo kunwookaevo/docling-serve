@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 RUN pip install --upgrade pip poetry
-COPY poetry.lock pyproject.toml ./
+COPY pyproject.toml ./
 RUN poetry config virtualenvs.create false && \
     poetry install --no-dev --no-interaction --no-ansi
 
